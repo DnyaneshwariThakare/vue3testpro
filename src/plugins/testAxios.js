@@ -1,64 +1,65 @@
 import axios from 'axios';
 
-var url = '/api';
-var url1 = '/locationApi';
-var url2 = '/serverlms';
-var urlcppo = '/servercpp';
+// ✅ Reusable function for API calls
+const apiCallpost = async (url, activityName, payload) => {
+    console.log("Inside testAxios - Activity:", activityName, "Payload:", payload);
 
-var testAxios1 = function testAxios1(payload, config) {
-    console.log("url1::", url1)
-    axios.post(url1, payload, config)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
+    // Ensure the payload is sent correctly
+    const finalPayload = { [activityName]: payload };
 
-var testAxiosrcpp = function testAxiosrcpp(payload, config) {
-    console.log("urlcppo::", urlcppo)
-    axios.post(urlcppo, payload, config)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
-var testAxioso = function testAxioso(payload, config) {
-    console.log("url2::", url2)
-    axios.post(url2, payload, config)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-}
+    // Get token from sessionStorage safely
+    const token = sessionStorage.getItem('auth_token') || "";
 
-var testAxios2 = function testAxios2(payload, config) {
-    console.log("url2::", url2, payload, config)
-    axios.post(url2, payload, config)
-        .then(response => {
-            console.log('Response:', response.data);
-            return response.data;
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    if (!token) {
+        console.error("No token found in sessionStorage!");
+        // return null;
+    }
+
+    // ✅ Correct Header Configuration
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+            'service-header': activityName  // ✅ Ensure this matches the expected API header
+        }
+    };
+
+    console.log(`Calling API: ${url}`);
+
+    try {
+        const response = await axios.post(url, finalPayload, config);
+        console.log('Response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error(`Error calling ${url}:`, error.response?.data || error.message || error);
+        return null;
+    }
+};
+
+// ✅ GET request function
+const apiCall = async (url, method = 'GET', config = {}) => {
+    console.log(`Calling API: ${url} with method: ${method}`);
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                ...config.headers
+            }
         });
 
-}
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-var testAxios = function testAxios(payload, config) {
-    console.log("url::", url, payload, config)
-    fetch('/api/test')
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
+        const data = await response.json();
+        console.log('Fetch Response:', data);
+        return data;
+    } catch (error) {
+        console.error(`Error calling ${url}:`, error.message || error);
+        return null;
+    }
+};
 
-}
-export { testAxios, testAxios1, testAxios2, testAxioso, testAxiosrcpp };
+export { apiCall, apiCallpost };
