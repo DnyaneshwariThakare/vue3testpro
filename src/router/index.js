@@ -23,6 +23,12 @@ const routes = [
         name: 'About',
         component: () => import('../views/AboutPage.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: 'addemp',
+        name: 'Add Employee',
+        component: () => import('../views/AddEmployee.vue'),
+        // meta: { requiresAuth: true }
       }
     ]
   }

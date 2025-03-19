@@ -22,12 +22,12 @@ export const useAuthStore = defineStore('auth', () => {
                 const userData = response.logintest.result;
                 token.value = userData.token;
                 roleId.value = userData.LoggedInuserRoleId;
-
+                user.value = userData;  // Store user data
                 // Set in session storage
                 sessionStorage.setItem("auth_token", token.value);
                 sessionStorage.setItem("user_role", roleId.value);
+                sessionStorage.setItem("user", user.value);
 
-                user.value = userData;  // Store user data
 
                 return true; // Login successful
             } else {

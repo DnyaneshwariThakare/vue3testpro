@@ -1,7 +1,7 @@
 <!-- components/DynamicTable.vue -->
 <template>
     <div>
-        <Button label="Export to Excel" @click="exportToExcel" class="p-button-success mb-3" />
+        <!-- <Button label="Export to Excel" @click="exportToExcel" class="p-button-success mb-3" /> -->
 
         <DataTable :value="data" :paginator="true" :lazy="true" :rows="rowsPerPage" :totalRecords="totalRecords"
             :first="offset" :rowsPerPageOptions="[5, 10, 20, 50, 100, 200]" @page="onPageChange"
@@ -81,22 +81,22 @@ const onPageChange = (event) => {
 };
 
 // ✅ Export data to Excel
-const exportToExcel = () => {
-    if (!props.data.length) return;
+// const exportToExcel = () => {
+//     if (!props.data.length) return;
 
-    const columns = Object.keys(props.data[0]);
-    const data = props.data.map((item, index) => {
-        const row = { "SR No": props.offset + index + 1 };
-        columns.forEach((col) => {
-            row[col] = item[col];
-        });
-        return row;
-    });
+//     const columns = Object.keys(props.data[0]);
+//     const data = props.data.map((item, index) => {
+//         const row = { "SR No": props.offset + index + 1 };
+//         columns.forEach((col) => {
+//             row[col] = item[col];
+//         });
+//         return row;
+//     });
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+//     const worksheet = XLSX.utils.json_to_sheet(data);
+//     const workbook = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
 
-    XLSX.writeFile(workbook, "Report.xlsx");
-};
+//     XLSX.writeFile(workbook, "Report.xlsx");
+// };
 </script>
